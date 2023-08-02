@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+
+h1 {
+    text-align: center;
+    font-family: 'Quicksand', sans-serif;
+    color: #0E6E7E;
+}
+
+
+body {
+    background-image: url('https://static.wixstatic.com/media/4d3b6d_750f850a84ca4a3fb3ba8f2d4279d870~mv2.png'); 
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    font-family: 'Quicksand', sans-serif;
+    color: #0E6E7E;
+}
+
+
+#myNavbar {
+    background-image: url('https://static.wixstatic.com/media/4d3b6d_5d30b755edae4120988021480195abbd~mv2.png');
+    background-size: cover;  
+    max-height: 70px;
+}
+
+
+
+#navbar-logo {
+    padding: 0;
+    width: auto;
+    height: 38px;
+}
+
+
+.brand-text {
+    margin-left: 16px;  /* adjust as needed */
+}
+
+
+.container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    padding: 20px;
+    height: calc(100vh - 64px); 
+    width: 100%; 
+    background-color: transparent;
+    border-radius: 16px;
+}
+
+
+.button {
+    min-width: 160px;
+    width: 50%;
+    max-width: 240px;
+    padding: 16px 32px;
+    font-size: 24px;
+    color: #0E6E7E;
+    background-color: #ffffff;
+    border: 3px solid #0E6E7E;
+    border-radius: 24px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    position: fixed;
+    bottom: 64px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Adjust the button size for smaller devices */
+@media (max-width: 600px) {
+    .button {
+        min-width: 240px;
+        font-size: 18px;
+    }
+}
+
+
+.button:hover {
+    background-color: transparent;
+    color: #0E6E7E;
+}
+
+.video_container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    height: calc(100vh - 64px); /* Set a height if it's not already set */
+    width: 100%; /* Set a width if it's not already set */
+    background-color: transparent;
+}
+
+#synthesiaVideo, #localVideo, #remoteVideo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    background-color: transparent;
+}

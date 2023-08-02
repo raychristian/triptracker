@@ -1,0 +1,170 @@
+{% extends "triptracker/base_generic.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="video_container" style="position: relative;">
+        <video id="synthesiaVideo" src="{% static 'triptracker/SV_1_readyForChat.mp4' %}" autoplay loop></video>
+        <video id="localVideo" width="640" height="480" autoplay style="display: none;"></video>
+        <video id="remoteVideo" width="640" height="480" autoplay style="display: none;"></video>
+
+        <!-- Goal 3: Added the "Finish chat" button -->
+        <button class="button" id="startButton" onclick="startCall()">Start Call</button>
+        <button class="button" id="finishButton" style="display: none;">Finish Chat</button>
+
+    </div>
+
+    <script>
+        var localStream;
+        var remoteStream;
+        var peerConnection;
+        var uuid;
+        var localUuid;
+        var localDisplayName;
+        var serverConnection;
+        var mediaRecorder;  // Goal 2: Added for video recording
+        var recordedBlobs;  // Goal 2: Added for video recording
+        var peerConnectionConfig = {
+            'iceServers': [
+                {'urls': 'stun:stun.stunprotocol.org:3478'},
+                {'urls': 'stun:stun.l.google.com:19302'},
+            ]
+        };
+        var videoElement = document.getElementById('synthesiaVideo');
+        var startButton = document.getElementById('startButton');
+
+        // Goal 3: Set up the Finish Chat button
+        var finishButton = document.getElementById('finishButton');
+        finishButton.addEventListener('click', function() {
+            mediaRecorder.stop(); // Goal 2: Stop recording
+            videoElement.removeAttribute('loop'); // Remove loop if it is set
+            videoElement.src = '{% static 'triptracker/SV_3_thanksForChatting.mp4' %}';
+            document.getElementById('localVideo').style.display = 'none'; // Hide the local video
+            document.getElementById('remoteVideo').style.display = 'none'; // Hide the remote video
+            finishButton.style.display = 'none'; // Hide the Finish Chat button
+            videoElement.play();
+            videoElement.onended = function() {
+                window.location.href = '/triptracker/'; // Navigate back to the video chat home page after the video has ended
+            };
+        });
+
+
+        startButton.addEventListener('click', function() {
+            videoElement.src = '{% static 'triptracker/SV_2_todaysTopic_copy.mp4' %}';
+            videoElement.removeAttribute('loop');
+            startButton.style.display = 'none';
+            videoElement.play();
+        });
+
+        videoElement.addEventListener('ended', function() {
+            startCall();
+            videoElement.src = '';
+            document.getElementById('localVideo').style.display = 'block';
+            finishButton.style.display = 'block'; // Goal 3: Show the Finish Chat button after the video ends
+        });
+
+function startCall() {
+    uuid = createUUID();
+    console.log('UUID:', uuid);
+
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ 
+                video: true, 
+                audio: {
+                    echoCancellation: true
+                }
+            })
+            .then(stream => {
+                localStream = stream;
+                document.getElementById('localVideo').srcObject = stream;
+
+                // Start the recording after the stream is obtained
+                const options = { mimeType: 'video/webm' };
+                recordedBlobs = [];
+                mediaRecorder = new MediaRecorder(stream, options);
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data && event.data.size > 0) {
+                        recordedBlobs.push(event.data);
+                    }
+                };
+                mediaRecorder.onstop = (event) => {
+                    const blob = new Blob(recordedBlobs, { type: 'video/webm' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'test.webm'; // replace with a dynamic filename, if needed
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(() => {
+                        document.body.removeChild(a);
+                        window.URL.revokeObjectURL(url);
+                    }, 100);
+                };
+                mediaRecorder.start();  // Start the recording
+
+                // Continue from previous code
+
+                peerConnection = new RTCPeerConnection(peerConnectionConfig);
+                peerConnection.onicecandidate = gotIceCandidate;
+                peerConnection.ontrack = gotRemoteStream;
+                stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
+            })
+            .catch(errorHandler);
+    } else {
+        alert('Your browser does not support getUserMedia API');
+    }
+}
+
+
+        function gotIceCandidate(event) {
+            if (event.candidate != null) {
+                serverConnection.send(JSON.stringify({'ice': event.candidate, 'uuid': localUuid}));
+            }
+        }
+
+        function gotRemoteStream(event) {
+            document.getElementById('remoteVideo').srcObject = event.streams[0];
+            remoteStream = event.streams[0];
+        }
+
+        function errorHandler(error) {
+            console.log(error);
+        }
+
+        serverConnection = new WebSocket('ws://' + window.location.hostname + ':8000/ws/triptracker/' + uuid + '/');
+
+        serverConnection.addEventListener('open', (event) => {
+            serverConnection.send('Hello Server!');
+        });
+
+        serverConnection.addEventListener('message', (event) => {
+            var signal = JSON.parse(event.data);
+            if (signal.uuid == uuid) return;
+
+            if (signal.sdp) {
+                peerConnection.setRemoteDescription(new RTCSessionDescription(signal.sdp)).then(function() {
+                    if (signal.sdp.type == 'offer') {
+                        peerConnection.createAnswer().then(createdDescription).catch(errorHandler);
+                    }
+                }).catch(errorHandler);
+            } else if (signal.ice) {
+                peerConnection.addIceCandidate(new RTCIceCandidate(signal.ice)).catch(errorHandler);
+            }
+        });
+
+        function createUUID() {
+            function s4() {
+                return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+            }
+            return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+        }
+
+        function createdDescription(description) {
+            console.log('got description');
+
+            peerConnection.setLocalDescription(description).then(function() {
+                serverConnection.send(JSON.stringify({'sdp': peerConnection.localDescription, 'uuid': uuid}));
+            }).catch(errorHandler);
+        }
+    </script>
+{% endblock %}
