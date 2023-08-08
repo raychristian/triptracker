@@ -15,6 +15,7 @@ services:
       - DATASTORE_EMULATOR_HOST=datastore:8001
       - DATASTORE_PROJECT_ID=local-dev
       - GOOGLE_CLOUD_PROJECT=local-dev
+      - SECRET_KEY=DevSecretKey123
     depends_on:
       - datastore
 
