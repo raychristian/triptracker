@@ -1,9 +1,8 @@
 from django.shortcuts import render
 from django.shortcuts import render, redirect
 from .forms import NewUserForm
-from django.contrib.auth import login
+from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
-from django.contrib.auth import logout
 from django.conf import settings
 import os
 
@@ -67,3 +66,11 @@ def login_request(request):
 def logout_view(request):
     logout(request)
     return redirect('/')  # Redirect to a success page.
+
+
+def myaccount_request(request):
+    return render(request, 'triptracker/myaccount.html')
+
+
+def faq_view(request):
+    return render(request, 'triptracker/faq.html')

@@ -1,0 +1,25 @@
+{% extends "triptracker/base_generic.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="container">
+    <div class="row">
+      {% for video in videos %}
+        <div class="col-md-4">
+          <div class="card">
+            <video class="card-img-top" controls>
+              <source src="{% static video.path %}" type="video/webm">
+              Your browser does not support the video tag.
+            </video>
+            <div class="card-body">
+              <h5 class="card-title">Trip {{ forloop.counter }}</h5>
+              <p class="card-text">Some quick example text.</p>
+              <a href="{% static video.path %}" class="btn btn-primary">View</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}
+
