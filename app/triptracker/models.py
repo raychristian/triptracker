@@ -11,7 +11,8 @@ class UserProfile(ndb.Model):
     userID = ndb.KeyProperty()  # Unique identifier for each user.
     username = ndb.StringProperty()  # User's display name.
     email = ndb.StringProperty()  # User's email address.
-    password = ndb.StringProperty()  # Encrypted password for authentication. NOTE: Consider hashing.
+    password = ndb.StringProperty()  # Encrypted password for authentication. 
+    salt = ndb.StringProperty()  # Salt used for hashing the password
     registrationDate = ndb.DateTimeProperty(auto_now_add=True)  # Registration date and time.
     videoIDs = ndb.KeyProperty(kind='UserGeneratedVideo', repeated=True)  # Video IDs linked to the user.
 

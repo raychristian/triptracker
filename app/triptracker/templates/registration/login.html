@@ -10,7 +10,7 @@
         <div class="card" v-if="showLoginForm">
           <div class="card-header">Login</div>
           <div class="card-body">
-            <form method="post">
+            <form method="post" action="{% url 'triptracker:login' %}">
             {% csrf_token %}
               <div class="form-group">
                 <label for="username">Username:</label>
@@ -30,7 +30,7 @@
         <div class="card" v-if="!showLoginForm">
           <div class="card-header">Register</div>
           <div class="card-body">
-            <form method="post">
+            <form method="post" action="{% url 'triptracker:register' %}">
             {% csrf_token %}
               <div class="form-group">
                 <label for="username">Username:</label>

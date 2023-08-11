@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.conf import settings
 import os
 
+from .services import create_new_user
 
 from django.templatetags.static import static
 from django.urls import reverse
@@ -30,16 +31,18 @@ def dashboard(request):
 
 def register_request(request):
     if request.method == "POST":
-        form = NewUserForm(request.POST)
-        print(form.data)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            messages.success(request, "Registration successful." )
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        user_key = create_new_user(username, email, password)
+        if user_key:
+            messages.success(request, "Registration successful.")
             return redirect("home")
-        messages.error(request, "Unsuccessful registration. Invalid information.")
-    form = NewUserForm()
-    return render (request=request, template_name="triptracker/register.html", context={"register_form":form})
+        else:
+            messages.error(request, "Unsuccessful registration. Invalid information.")
+    return render(request, "triptracker/register.html") # Or whichever template you're using for registration
+
+
 
 def home(request):
     return render(request, "triptracker/home.html")
