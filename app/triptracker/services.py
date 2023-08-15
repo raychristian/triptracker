@@ -1,5 +1,7 @@
 import os
 from .models import UserProfile, UserGeneratedVideo, AIAvatarVideo, VideoSession, AIAnalysis
+from triptracker.authentication_backend import DatastoreBackend
+
 
 def create_new_user(username, email, password):
     """

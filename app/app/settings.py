@@ -125,3 +125,4 @@ DATASTORE_NAMESPACE = 'main'
 TEST_RUNNER = 'app.datastore.TestRunner'
 
 AUTHENTICATION_BACKENDS = ['triptracker.authentication_backend.DatastoreBackend']
+

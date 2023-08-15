@@ -37,7 +37,7 @@ def register_request(request):
         user_key = create_new_user(username, email, password)
         if user_key:
             messages.success(request, "Registration successful.")
-            return redirect("home")
+            return redirect("triptracker:home")
         else:
             messages.error(request, "Unsuccessful registration. Invalid information.")
     return render(request, "triptracker/register.html") # Or whichever template you're using for registration
