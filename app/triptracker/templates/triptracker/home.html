@@ -7,7 +7,8 @@
         <video id="localVideo" width="640" height="480" autoplay style="display: none;"></video>
 
         <button class="button" id="startButton" onclick="playTopicVideo()">Start Chat</button>
-        <button class="button" id="finishButton" style="display: none;" onclick="finishRecording()">Finish Chat</button>
+        <button class="button" id="finishButton" style="display: none;">Finish Chat</button>
+
     </div>
 
     <script>
@@ -76,36 +77,44 @@
 
 
         function finishRecording() {
-            if (!mediaRecorder) {
-                console.error("mediaRecorder is not initialized");
-                return;
-            }
-            console.log("Finish recording function triggered"); // debugging
-            mediaRecorder.stop();
+             if (!mediaRecorder) {
+                 console.error("mediaRecorder is not initialized");
+                 return;
+             }
+             console.log("Finish recording function triggered"); // debugging
+             mediaRecorder.stop();
+             const blob = new Blob(recordedBlobs, { type: 'video/webm' });
+             onRecordingFinish(blob);
+         }
 
-            // Download the recorded video
-            const blob = new Blob(recordedBlobs, { type: 'video/webm' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = 'recorded_video.webm';
-            document.body.appendChild(a);
-            a.click();
-            setTimeout(() => {
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
-            }, 100);
 
-            videoElement.removeAttribute('loop');
-            videoElement.src = '{% static 'triptracker/SV_3_thanksForChatting.mp4' %}';
-            document.getElementById('localVideo').style.display = 'none';
-            finishButton.style.display = 'none';
-            videoElement.play();
-            videoElement.onended = function() {
-                window.location.href = '/';
-            };
+            // After video recording is complete...
+        function onRecordingFinish(blob) {
+            // Send an AJAX request to get a signed URL for uploading to GCS
+            $.ajax({
+                url: '/get_signed_url/',  // URL of the Django view
+                method: 'POST',
+                success: function(response) {
+                    var signedUrl = response.signed_url;
+                    // Use this signed URL to upload the video blob to GCS
+                    uploadVideoToGCS(signedUrl, blob);
+                }
+            });
         }
+
+        function uploadVideoToGCS(signedUrl, blob) {
+            $.ajax({
+                url: signedUrl,
+                method: 'PUT',
+                data: blob,
+                processData: false,
+                contentType: blob.type,
+                success: function() {
+                    alert('Video uploaded successfully');
+                }
+            });
+        }
+
     
     
 
