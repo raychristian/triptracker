@@ -6,57 +6,99 @@
         <video id="synthesiaVideo" src="{% static 'triptracker/SV_1_readyForChat.mp4' %}" autoplay loop></video>
         <video id="localVideo" width="640" height="480" autoplay style="display: none;"></video>
 
-        <button class="button" id="startButton" onclick="playTopicVideo()">Start Chat</button>
+        <button class="button" id="startButton" onclick="startChat()">Start Chat</button>
+        <button class="button" id="nextButton" style="display: none;" onclick="nextTopic()">Next</button>
         <button class="button" id="finishButton" style="display: none;" onclick="finishRecording()">Finish Chat</button>
+
     </div>
 
     <script>
         var mediaRecorder;
         var recordedBlobs;
         var videoElement = document.getElementById('synthesiaVideo');
+        var localVideoElement = document.getElementById('localVideo');
         var startButton = document.getElementById('startButton');
+        var nextButton = document.getElementById('nextButton');
         var finishButton = document.getElementById('finishButton');
+        var conversationState = 0; // To track the current state of the conversation
 
-        // Attach the event listener right after the button declaration
-        finishButton.addEventListener('click', finishRecording);
+        function startChat() {
+            conversationState = 1;
+            playVideo('SV_PleasIntro_1.mp4');
+        }
 
-        function playTopicVideo() {
-            videoElement.removeAttribute('loop');
-            videoElement.src = '{% static 'triptracker/SV_2_todaysTopic.mp4' %}';
-            startButton.style.display = 'none'; 
+        function nextTopic() {
+            finishRecording(); // First, we finish and save the current recording
+            conversationState += 1; // Then we proceed to the next topic
+            
+            switch(conversationState) {
+                case 2:
+                    playVideo('SV_todaysTopic_1.mp4');
+                    break;
+                case 4:
+                    playVideo('SV_todaysTopic_2.mp4');
+                    break;
+                case 6:
+                    playVideo('SV_todaysTopic_3.mp4');
+                    break;
+                default:
+                    // Handle error or unexpected state
+                    break;
+            }
+        }
+
+
+        function finishChat() {
+            conversationState = 7;
+            playVideo('SV_acknowl_3.mp4');
+        }
+
+        function playVideo(filename) {
+            nextButton.style.display = 'none';
+            finishButton.style.display = 'none';
+
+            videoElement.src = '{% static 'triptracker/' %}' + filename;
+            videoElement.play();
             videoElement.onended = function() {
-                getCameraAccess();
-                document.getElementById('localVideo').style.display = 'block';
-                setTimeout(startRecording, 1000);  // 1 second delay
-                finishButton.style.display = 'block';
+                handleVideoEnd();
             };
         }
 
-        function startRecording() {
-            console.log("startRecording function triggered"); // debugging
+        function handleVideoEnd() {
+            switch (conversationState) {
+                case 1:
+                case 3:
+                case 5:
+                    nextButton.style.display = 'block'; // Show the 'Next' button
+                    requestCameraAccess();
+                    break;
+                case 7:
+                    playVideo('SV_wrapup_1.mp4');
+                    break;
+                case 8:
+                    // Final state, re-route back to the landing page
+                    window.location.href = '/';
+                    break;
+                default:
+                    // Handle error or unexpected state
+                    break;
+            }
+        }
+
+
+        
+        function requestCameraAccess() {
             
-            if (!document.getElementById('localVideo').srcObject) {
+            // Check if the mediaRecorder is already initialized
+            if (mediaRecorder) {
+                // If it is, we can just start a new recording session
+                recordedBlobs = [];
+                mediaRecorder.start();
+                // Automatically finish the recording after 10 seconds
+                setTimeout(finishRecording, 10000);
                 return;
             }
-    
-            // Start recording using the stream from localVideo
-            const stream = document.getElementById('localVideo').srcObject;
 
-            const options = { mimeType: 'video/webm' };
-            recordedBlobs = [];
-            mediaRecorder = new MediaRecorder(stream, options);
-            mediaRecorder.ondataavailable = (event) => {
-                if (event.data && event.data.size > 0) {
-                    recordedBlobs.push(event.data);
-                }
-            };
-            mediaRecorder.start();
-
-            finishButton.style.display = 'block';
-        }
-
-
-        function getCameraAccess() {
             if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
                 alert('Your browser does not support getUserMedia API');
                 return;
@@ -69,10 +111,53 @@
                 }
             }).then(stream => {
                 document.getElementById('localVideo').srcObject = stream;
+                
+                // Step 1: Initialize recordedBlobs
+                recordedBlobs = [];
+
+                // Step 2: Initialize mediaRecorder and its event handlers
+                let options = { mimeType: 'video/webm;codecs=vp9' };
+                if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                    console.error(`${options.mimeType} is not Supported`);
+                    options = { mimeType: 'video/webm;codecs=vp8' };
+                    if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                        console.error(`${options.mimeType} is not Supported`);
+                        options = { mimeType: 'video/webm' };
+                        if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                            console.error(`${options.mimeType} is not Supported`);
+                            options = { mimeType: '' };
+                        }
+                    }
+                }
+
+                try {
+                    mediaRecorder = new MediaRecorder(stream, options);
+                } catch (e) {
+                    console.error('Exception while creating MediaRecorder:', e);
+                    return;
+                }
+
+                mediaRecorder.onstop = (event) => {
+                    console.log('Recorder stopped:', event);
+                };
+
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data && event.data.size > 0) {
+                        recordedBlobs.push(event.data);
+                    }
+                };
+                
+                // Step 3: Start Recording
+                mediaRecorder.start();
+
+                // Automatically finish the recording after 10 seconds
+                setTimeout(finishRecording, 10000);  
+                
             }).catch(error => {
                 console.error('Error accessing media devices.', error);
             });
         }
+       
 
 
         function finishRecording() {
@@ -80,34 +165,57 @@
                 console.error("mediaRecorder is not initialized");
                 return;
             }
-            console.log("Finish recording function triggered"); // debugging
+            console.log("Finish recording function triggered");
             mediaRecorder.stop();
-
-            // Download the recorded video
-            const blob = new Blob(recordedBlobs, { type: 'video/webm' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = 'recorded_video.webm';
-            document.body.appendChild(a);
-            a.click();
-            setTimeout(() => {
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
-            }, 100);
-
-            videoElement.removeAttribute('loop');
-            videoElement.src = '{% static 'triptracker/SV_3_thanksForChatting.mp4' %}';
-            document.getElementById('localVideo').style.display = 'none';
-            finishButton.style.display = 'none';
-            videoElement.play();
-            videoElement.onended = function() {
-                window.location.href = '/';
-            };
+            saveRecording();  // We'll define this function later to handle saving the video
+            
+            // Decide which video to play next based on the conversationState
+            switch (conversationState) {
+                case 2:
+                    playVideo('SV_acknowl_1.mp4');
+                    break;
+                case 4:
+                    playVideo('SV_acknowl_2.mp4');
+                    break;
+                case 6:
+                    playVideo('SV_acknowl_3.mp4');
+                    break;
+                case 7:
+                    playVideo('SV_3_thanksForChatting.mp4');
+                    break;
+                default:
+                    // Handle error or unexpected state
+                    break;
+            }
         }
-    
-    
 
+        function saveRecording() {
+            // Convert recordedBlobs to a Blob object
+            const blob = new Blob(recordedBlobs, { type: 'video/webm' });
+            
+            // Create FormData to send the video file
+            const formData = new FormData();
+            formData.append('video', blob, 'recorded_video.webm');
+            
+            const userId = "{{ request.user.id }}";  // This uses the Django template language to insert the user's ID into the JavaScript
+            formData.append('user_id', userId);
+
+
+            // Send the video file to the server
+            fetch('/save_video/', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Video saved successfully:', data);
+            })
+            .catch(error => {
+                console.error('Error saving video:', error);
+            });
+        }
+
+    
+    
     </script>
 {% endblock %}

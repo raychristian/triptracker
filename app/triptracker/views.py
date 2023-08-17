@@ -6,6 +6,11 @@ from django.contrib import messages
 from django.conf import settings
 import os
 
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from google.cloud import storage
+from triptracker.models import UserGeneratedVideoEntity
+
 from .services import create_new_user
 
 from django.templatetags.static import static
@@ -77,3 +82,38 @@ def myaccount_request(request):
 
 def faq_view(request):
     return render(request, 'triptracker/faq.html')
+
+
+@csrf_exempt
+def save_video(request):
+    if request.method == 'POST':
+        video_file = request.FILES['video']
+        user_id = request.POST.get('user_id', None)
+        
+        # Save to Google Cloud Storage
+        storage_client = storage.Client()
+        bucket_name = 'triptracker-394521'
+        bucket = storage_client.bucket(bucket_name)
+        
+        blob = bucket.blob(video_file.name)
+        blob.upload_from_file(video_file.file, content_type=video_file.content_type)
+        video_url = blob.public_url
+        
+        # Save reference to Google Cloud Datastore
+        video = UserGeneratedVideoEntity(
+            videoID=ndb.Key('UserGeneratedVideo', video_file.name),  
+            userID=ndb.Key('UserProfile', user_id),
+            videoURL=video_url,
+            videoType='UPV',
+            duration=0,  # Future product feature (pull from front end)
+            title="Sample Video Title",  # Future product feature (pull from front end)
+            description="Sample Video Description",  # Future product feature (pull from front end)
+            shareable=False,  # Default to False (pull from frontend)
+            analysisReference=None
+        )
+        video.save()
+        
+        return JsonResponse({'status': 'success', 'video_url': video_url})
+        
+    else:
+        return JsonResponse({'status': 'fail', 'message': 'Invalid request method'}, status=400)

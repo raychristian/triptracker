@@ -7,6 +7,8 @@ from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
 
+from triptracker.views import save_video
+
 
 app_name = 'triptracker'
 
@@ -18,4 +20,5 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path("myaccount/", views.myaccount_request, name="myaccount"),
     path("faq/", views.faq_view, name="faq"),
+    path('save_video/', save_video, name='save_video'),
 ]

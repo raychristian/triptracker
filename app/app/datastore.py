@@ -7,19 +7,22 @@ from google.auth.credentials import AnonymousCredentials
 
 from django.conf import settings
 from django.test.runner import DiscoverRunner
+ndb.Client()
 
 
 def get_client():
 	""" Create and return a datastore client """
-	if settings.IS_GAE:
-		return ndb.Client(namespace=settings.DATASTORE_NAMESPACE)
+	# if settings.IS_GAE:
+	#	return ndb.Client(namespace=settings.DATASTORE_NAMESPACE)
 
-	return ndb.Client(
-		credentials=AnonymousCredentials(),
-		project=settings.GOOGLE_CLOUD_PROJECT,
-		namespace=settings.DATASTORE_NAMESPACE,
+	# return ndb.Client(
+	# 	credentials=AnonymousCredentials(),
+	# 	project=settings.GOOGLE_CLOUD_PROJECT,
+	# 	namespace=settings.DATASTORE_NAMESPACE,
 
-	)
+	# )
+
+	return ndb.Client()
 
 
 class NDBMiddleware:

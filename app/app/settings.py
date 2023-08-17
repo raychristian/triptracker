@@ -14,6 +14,13 @@ import os
 from pathlib import Path
 
 from app import secrets
+import json
+
+
+# Use the credentials to authenticate
+from google.oauth2 import service_account
+from google.cloud.storage import Client
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.auth',
     'triptracker',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -126,3 +134,15 @@ TEST_RUNNER = 'app.datastore.TestRunner'
 
 AUTHENTICATION_BACKENDS = ['triptracker.authentication_backend.DatastoreBackend']
 
+# Google Cloud Storage Configurations
+GS_BUCKET_NAME = 'triptracker-394521'
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+GS_QUERYSTRING_AUTH = False
+
+# Fetch credentials from Secret Manager
+# GS_CREDENTIALS_JSON = secrets.get('google_cloud_storage_credentials-triptracker')
+
+# Use the credentials to authenticate
+# credentials = service_account.Credentials.from_service_account_info(json.loads(GS_CREDENTIALS_JSON))
+# GS_CREDENTIALS = credentials
