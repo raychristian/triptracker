@@ -18,8 +18,7 @@
         var startButton = document.getElementById('startButton');
         var finishButton = document.getElementById('finishButton');
 
-        // Attach the event listener right after the button declaration
-        finishButton.addEventListener('click', finishRecording);
+        
 
         function playTopicVideo() {
             videoElement.removeAttribute('loop');
@@ -28,13 +27,14 @@
             videoElement.onended = function() {
                 getCameraAccess();
                 document.getElementById('localVideo').style.display = 'block';
-                setTimeout(startRecording, 1000);  // 1 second delay
                 finishButton.style.display = 'block';
+                console.log("Finish button should be visible now"); // debugging
             };
         }
 
         function startRecording() {
             console.log("startRecording function triggered"); // debugging
+            console.log("localVideo srcObject:", document.getElementById('localVideo').srcObject);
             
             if (!document.getElementById('localVideo').srcObject) {
                 return;
@@ -43,15 +43,26 @@
             // Start recording using the stream from localVideo
             const stream = document.getElementById('localVideo').srcObject;
 
+            if (!stream) {
+                console.error("No camera stream available");
+                return;
+            }
+
             const options = { mimeType: 'video/webm' };
             recordedBlobs = [];
             mediaRecorder = new MediaRecorder(stream, options);
+            mediaRecorder.onerror = function(event) {
+                console.log("mediaRecorder error:", event.error);
+            };
+            console.log("mediaRecorder initialized:", mediaRecorder); // debugging
             mediaRecorder.ondataavailable = (event) => {
                 if (event.data && event.data.size > 0) {
                     recordedBlobs.push(event.data);
                 }
             };
             mediaRecorder.start();
+            console.log("mediaRecorder state after start:", mediaRecorder.state); // debugging
+
 
             finishButton.style.display = 'block';
         }
@@ -70,25 +81,15 @@
                 }
             }).then(stream => {
                 document.getElementById('localVideo').srcObject = stream;
+                console.log("Camera stream obtained:", stream); // Debugging
+                startRecording(); // <-- Move the call to startRecording here
             }).catch(error => {
                 console.error('Error accessing media devices.', error);
             });
         }
 
 
-        function finishRecording() {
-             if (!mediaRecorder) {
-                 console.error("mediaRecorder is not initialized");
-                 return;
-             }
-             console.log("Finish recording function triggered"); // debugging
-             mediaRecorder.stop();
-             const blob = new Blob(recordedBlobs, { type: 'video/webm' });
-             onRecordingFinish(blob);
-         }
-
-
-            // After video recording is complete...
+        // After video recording is complete...
         function onRecordingFinish(blob) {
             // Send an AJAX request to get a signed URL for uploading to GCS
             $.ajax({
@@ -98,9 +99,42 @@
                     var signedUrl = response.signed_url;
                     // Use this signed URL to upload the video blob to GCS
                     uploadVideoToGCS(signedUrl, blob);
+                },
+                error: function() {
+                    console.error('Failed to get signed URL for video upload.');
                 }
             });
         }
+
+
+        // Attach the event listener right after the button declaration
+        finishButton.addEventListener('click', finishRecording);
+
+        function finishRecording() {
+            console.log("Finish recording function triggered");
+            if (!mediaRecorder) {
+                console.error("mediaRecorder is not initialized");
+                return;
+            }
+            mediaRecorder.stop();
+            const blob = new Blob(recordedBlobs, { type: 'video/webm' });
+            onRecordingFinish(blob);
+
+            // Hide the local video and finish button
+            document.getElementById('localVideo').style.display = 'none';
+            finishButton.style.display = 'none';
+
+            // Play the "thanks for chatting" video
+            videoElement.removeAttribute('loop');
+            videoElement.src = '{% static "triptracker/SV_3_thanksForChatting.mp4" %}';
+            videoElement.play();
+
+            // When the "thanks for chatting" video ends, redirect user back to the looped video home screen
+            videoElement.onended = function() {
+                window.location.href = '/';  // Navigate back to the home page after the video has ended
+            };
+        }
+
 
         function uploadVideoToGCS(signedUrl, blob) {
             $.ajax({
