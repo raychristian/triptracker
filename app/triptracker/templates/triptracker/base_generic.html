@@ -8,6 +8,12 @@
     <link rel="stylesheet" href="{% static 'triptracker/style.css' %}">
     <!-- Include Vue.js here -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script type="text/javascript"> <!-- Add this block -->
+        // This is setting the CSRF token for AJAX to use
+        var csrftoken = '{{ csrf_token }}';
+        console.log(csrftoken);
+    </script>
+
 </head>
 <body>
     <header>

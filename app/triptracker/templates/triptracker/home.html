@@ -91,13 +91,14 @@
 
         // After video recording is complete...
         function onRecordingFinish(blob) {
-            // Send an AJAX request to get a signed URL for uploading to GCS
             $.ajax({
-                url: '/get_signed_url/',  // URL of the Django view
+                url: '/get_signed_url/',  
                 method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
                 success: function(response) {
                     var signedUrl = response.signed_url;
-                    // Use this signed URL to upload the video blob to GCS
                     uploadVideoToGCS(signedUrl, blob);
                 },
                 error: function() {
@@ -105,6 +106,8 @@
                 }
             });
         }
+
+
 
 
         // Attach the event listener right after the button declaration
