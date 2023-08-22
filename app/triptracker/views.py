@@ -82,9 +82,10 @@ def login_request(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+            print(request.session.session_key)
             print(f"User object: {request.user}") 
             print(f"User {username} is authenticated: {request.user.is_authenticated}")
-            return redirect('home') # or wherever you want to redirect after login
+            return redirect('triptracker:home') # or wherever you want to redirect after login
         else:
             print(f"Authentication failed for user {username}") 
             return render(request, "registration/login.html", {
@@ -118,7 +119,7 @@ def save_video_metadata(user_id, video_url):
     with ndb.Client().context():
         # Create a new UserGeneratedVideo entity
         user_video = UserGeneratedVideo(
-            userID=ndb.Key('UserProfile', user_id),
+            user_id=ndb.Key('UserProfile', user_id),
             videoID = ndb.StringProperty(default=lambda: str(uuid.uuid4())),
             videoURL=video_url,
             timestamp=datetime.datetime.now()  # Automatically set the current date and time

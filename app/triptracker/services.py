@@ -20,11 +20,11 @@ def fetch_user_by_email(email):
     user = UserProfile.query(UserProfile.email == email).get()
     return user
 
-def create_new_video(userID, videoURL, videoType, title=None, description=None):
+def create_new_video(user_id, videoURL, videoType, title=None, description=None):
     """
     Create a new user-generated video and save to Datastore.
     """
-    video = UserGeneratedVideo(userID=userID, videoURL=videoURL, videoType=videoType, title=title, description=description)
+    video = UserGeneratedVideo(user_id=ndb.Key('UserProfile', user_id), videoURL=videoURL, videoType=videoType, title=title, description=description)
     video_key = video.put()
     return video_key
 

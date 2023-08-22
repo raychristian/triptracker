@@ -126,3 +126,7 @@ TEST_RUNNER = 'app.datastore.TestRunner'
 
 AUTHENTICATION_BACKENDS = ['triptracker.authentication_backend.DatastoreBackend']
 
+# Set a 2 hour logged in user session
+SESSION_COOKIE_AGE = 7200
+
+

@@ -8,7 +8,6 @@ from google.cloud import ndb
 class UserProfile(ndb.Model):
 	# User's registration info
 
-    userID = ndb.KeyProperty()  # Unique identifier for each user.
     username = ndb.StringProperty()  # User's display name.
     email = ndb.StringProperty()  # User's email address.
     password = ndb.StringProperty()  # Encrypted password for authentication. 
@@ -21,7 +20,7 @@ class UserGeneratedVideo(ndb.Model):
 	# User's video responses 
 
     videoID = ndb.KeyProperty()  # Unique video identifier.
-    userID = ndb.KeyProperty(kind='UserProfile')  # Reference to the associated user.
+    user_id = ndb.KeyProperty(kind='UserProfile')  # Reference to the associated user.
     videoURL = ndb.StringProperty()  # Link to the video storage location.
     videoType = ndb.StringProperty()  # Type of video (e.g., AV, UPV, AAV, AHV).
     timestamp = ndb.DateTimeProperty(auto_now_add=True)  # Video upload or creation date/time.
@@ -49,7 +48,7 @@ class VideoSession(ndb.Model):
 	# A full session of user video responses 
 
     sessionID = ndb.KeyProperty()  # Unique session identifier.
-    userID = ndb.KeyProperty(kind='UserProfile')  # Reference to the participating user.
+    user_id = ndb.KeyProperty(kind='UserProfile')  # Reference to the participating user.
     videoSequence = ndb.KeyProperty(kind='UserGeneratedVideo', repeated=True)  # Video IDs sequence for the session.
     sessionTitle = ndb.StringProperty()  # (Optional) Session title.
     sessionDescription = ndb.StringProperty()  # (Optional) Session description.
