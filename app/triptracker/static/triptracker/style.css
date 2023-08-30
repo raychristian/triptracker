@@ -17,19 +17,28 @@ body {
 }
 
 
-#myNavbar {
+.navbar {
     background-image: url('https://static.wixstatic.com/media/4d3b6d_5d30b755edae4120988021480195abbd~mv2.png');
     background-size: cover;  
-    max-height: 70px;
+    position: relative; 
+    overflow: visible;
 }
 
 
-@media (max-width: 600px) {
+/* ensure that the .dropdown-menu is visable above the .navbar */
+
+.dropdown-menu {
+    position: absolute;
+    z-index: 1000; /* high value to ensure it's on top */
+}
+
+/* Removing or commenting out the max-height restriction */
+/* @media (max-width: 600px) {
     #myNavbar {
-        max-height: 90px;  /* adjust this value as needed */
+        max-height: 90px;  
+        
     }
-}
-
+} */
 
 
 #navbar-logo {
@@ -44,6 +53,17 @@ body {
     }
 }
 
+.navbar-toggler {
+    margin-left: auto !important;
+}
+
+.nav-custom-container {
+    overflow: visible;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
 
 .brand-text {
@@ -84,10 +104,11 @@ body {
 }
 
 /* Adjust the button size for smaller devices */
+
 @media (max-width: 600px) {
     .button {
-        min-width: 260px;
-        font-size: 24px;
+        min-width: 240px;
+        font-size: 18px;
         padding: 18px 36px;
     }
 }
