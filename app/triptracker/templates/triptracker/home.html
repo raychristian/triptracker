@@ -3,7 +3,7 @@
 
 {% block content %}
     <div class="video_container" style="position: relative;">
-        <video id="synthesiaVideo" src="{% static 'triptracker/SV_1_readyForChat.mp4' %}" autoplay loop></video>
+        <video id="synthesiaVideo" src="{% static 'triptracker/SV_1_readyForChat.mp4' %}" autoplay loop muted></video>
         <video id="localVideo" width="640" height="480" autoplay style="display: none;"></video>
 
         <button class="button" id="startButton" onclick="playTopicVideo()">Start Chat</button>

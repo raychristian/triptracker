@@ -1,0 +1,47 @@
+{% extends "triptracker/base_generic.html" %}
+
+{% block content %}
+<div id="app">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+
+        <!-- Password Check Form -->
+        <div class="card" v-if="showPasswordForm">
+          <div class="card-header">Access</div>
+          <div class="card-body">
+            <form method="post" action="{% url 'triptracker:password_check' %}">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="password">Enter Password:</label>
+                <input type="password" name="password" required id="password" class="form-control">
+              </div>
+              <button type="submit" class="btn btn-primary">Submit</button>
+              <p>Don't have access? <a href="#" @click.prevent="showPasswordForm = false">Join the Waitlist</a></p>
+            </form>
+          </div>
+        </div>
+
+        <!-- Waitlist Info -->
+        <div class="card" v-if="!showPasswordForm">
+          <div class="card-header">Join the Waitlist</div>
+          <div class="card-body">
+            <p>Get notified when the Trip Tracker goes live. Email us at <a href="mailto:ray@psoiree.com?subject=Please add me">ray@psoiree.com</a> with the subject heading "Please add me".</p>
+            <p>Want access now? <a href="#" @click.prevent="showPasswordForm = true">Enter Password</a></p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+new Vue({
+  el: '#app',
+  data: {
+    showPasswordForm: true,
+  },
+})
+</script>
+{% endblock %}

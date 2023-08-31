@@ -19,4 +19,5 @@ urlpatterns = [
     path("myaccount/", views.myaccount_request, name="myaccount"),
     path("faq/", views.faq_view, name="faq"),
     path('get_signed_url/', views.get_signed_url, name='get_signed_url'),
+    path('password_check/', views.password_check, name='password_check'),
 ]

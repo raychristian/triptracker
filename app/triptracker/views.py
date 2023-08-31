@@ -19,6 +19,18 @@ from google.cloud import ndb
 import datetime
 import uuid
 
+def password_check(request):
+    if request.method == 'POST':
+        password = request.POST.get('password')
+        # Here you would check the password against whatever you have set.
+        # For simplicity, I'm hardcoding a value, but you might want to use a setting or database check.
+        if password == "your_secret_password":
+            # grant access or redirect to the desired page
+            return redirect('triptracker:dashboard')
+        else:
+            messages.error(request, 'Incorrect password. Please try again.')
+
+    return redirect('triptracker:home')  # Redirect back to home if the password is wrong or if it's a GET request
 
 def get_signed_url(request):
     if request.method == 'POST':
