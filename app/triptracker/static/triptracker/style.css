@@ -51,37 +51,18 @@ body {
     z-index: 1000; /* high value to ensure it's on top */
 }
 
-/* 
-.collapse navbar-collapse {
-    position: abs;
-    right: 0;
-}
- */
+
 .navbar-toggler {
-    float: right;
+    float: left;
 }
 
+.navbar-collapse {
+    text-align: right;
+}
 
-/* .nav-custom-container {
-    overflow: visible;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-} */
-
-/* ensure that the .dropdown-menu is visable above the .navbar */
-
-
-/* Removing or commenting out the max-height restriction */
-/* @media (max-width: 600px) {
-    #myNavbar {
-        max-height: 90px;  
-        
-    }
-} */
-
-
+.navbar-nav {
+    justify-content: flex-end;
+}
 
 .container {
     position: relative;
