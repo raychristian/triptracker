@@ -16,6 +16,21 @@ body {
     color: #0E6E7E;
 }
 
+/* FAQ Styles */
+.faq-question {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-top: 1em;
+    color: #0E6E7E;
+}
+
+.faq-answer {
+    font-size: 1em;
+    margin-top: 0.5em;
+    margin-bottom: 1em;
+    color: #0E6E7E;
+}
+
 
 .navbar {
     background-image: url('https://static.wixstatic.com/media/4d3b6d_5d30b755edae4120988021480195abbd~mv2.png');
@@ -76,6 +91,13 @@ body {
     background-color: transparent;
     border-radius: 16px;
 }
+
+.faq-page-container {
+    height: auto;  // Remove the fixed height
+    padding-top: 70px;  // To push it below the navbar
+    justify-content: flex-start;  // To start content from the top
+}
+
 
 
 .button {
