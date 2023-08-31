@@ -22,24 +22,11 @@ body {
     background-size: cover;  
     position: relative; 
     overflow: visible;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
-
-
-/* ensure that the .dropdown-menu is visable above the .navbar */
-
-.dropdown-menu {
-    position: absolute;
-    z-index: 1000; /* high value to ensure it's on top */
-}
-
-/* Removing or commenting out the max-height restriction */
-/* @media (max-width: 600px) {
-    #myNavbar {
-        max-height: 90px;  
-        
-    }
-} */
-
 
 #navbar-logo {
     padding: 0;
@@ -53,22 +40,47 @@ body {
     }
 }
 
-.navbar-toggler {
-    margin-left: auto !important;
+.brand-text {
+    margin-left: 8px;  /* adjust as needed */
 }
 
-.nav-custom-container {
+
+.dropdown-menu {
+    position: absolute;
+    float: right;
+    z-index: 1000; /* high value to ensure it's on top */
+}
+
+/* 
+.collapse navbar-collapse {
+    position: abs;
+    right: 0;
+}
+ */
+.navbar-toggler {
+    float: right;
+}
+
+
+/* .nav-custom-container {
     overflow: visible;
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
+} */
+
+/* ensure that the .dropdown-menu is visable above the .navbar */
 
 
-.brand-text {
-    margin-left: 16px;  /* adjust as needed */
-}
+/* Removing or commenting out the max-height restriction */
+/* @media (max-width: 600px) {
+    #myNavbar {
+        max-height: 90px;  
+        
+    }
+} */
+
 
 
 .container {

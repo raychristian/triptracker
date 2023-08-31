@@ -4,14 +4,19 @@
     <meta charset="UTF-8">
     <title>Trip Tracker</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Include the boostrap CDN -->    
     {% load static %}
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
     <!-- Include the custom CSS file -->
     <link rel="stylesheet" href="{% static 'triptracker/style.css' %}">
+    
     <!-- Include Vue.js here -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
     <script type="text/javascript"> <!-- Add this block -->
-        // This is setting the CSRF token for AJAX to use
+    
+    // This is setting the CSRF token for AJAX to use
         var csrftoken = '{{ csrf_token }}';
         console.log(csrftoken);
     </script>
@@ -20,37 +25,52 @@
 <body>
     <header>
 
-        <nav class="navbar navbar-expand-md navbar-light bg-light">
-            <div class="nav-custom-container">
-                <a class="navbar-brand" href="#">
-                    <img src="https://static.wixstatic.com/media/4d3b6d_9a8391969e4444a29fcf745d3c589885~mv2.png" id="navbar-logo">
-                    <span class="brand-text">Trip Tracker</span>
-                </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                    <ul class="navbar-nav ml-auto">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="{% url 'triptracker:home' %}">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'triptracker:faq' %}">FAQ</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'triptracker:login' %}">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'triptracker:dashboard' %}">Dashboard</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-        
-        
+<!-- Begin Navbar -->
+<nav class="navbar navbar-expand-md navbar-light bg-light">
 
+    <!-- Navbar Container -->
+    <!-- <div class="nav-custom-container"> -->
 
+        <!-- Branding: Logo and Site Name -->
+        <a class="navbar-brand" href="#">
+            <img src="https://static.wixstatic.com/media/4d3b6d_9a8391969e4444a29fcf745d3c589885~mv2.png" id="navbar-logo">
+            <span class="brand-text">Trip Tracker</span>
+        </a>
+
+        <!-- Mobile Navbar Toggle Button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar Links -->
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+                <!-- Home Link -->
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'triptracker:home' %}">Home</a>
+                </li>
+                <!-- FAQ Link -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'triptracker:faq' %}">FAQ</a>
+                </li>
+                <!-- Login Link -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'triptracker:login' %}">Login</a>
+                </li>
+                <!-- Dashboard Link -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'triptracker:dashboard' %}">Dashboard</a>
+                </li>
+            </ul>
+        </div>
+
+    <!-- </div> -->
+    <!-- End Navbar Container -->
+
+</nav>
+<!-- End Navbar -->
+
+        
     </header>
 
     <main>
