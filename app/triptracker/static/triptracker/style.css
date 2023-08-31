@@ -92,6 +92,13 @@ body {
     border-radius: 16px;
 }
 
+.dashboard-video-container {
+    height: auto;  // Remove the fixed height
+    padding-top: 70px;  // To push it below the navbar
+    justify-content: flex-start;  // To start content from the top
+}
+
+
 .faq-page-container {
     height: auto;  // Remove the fixed height
     padding-top: 70px;  // To push it below the navbar

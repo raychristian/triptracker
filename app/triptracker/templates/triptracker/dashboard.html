@@ -2,10 +2,10 @@
 {% load static %}
 
 {% block content %}
-    <div class="container">
+    <div class="container dashboard-video-container">
     <div class="row">
       {% for video in videos %}
-        <div class="col-md-4">
+        <div class="col-md-4 mb-4">
           <div class="card">
             <video class="card-img-top" controls>
               <source src="{% static video.path %}" type="video/webm">
