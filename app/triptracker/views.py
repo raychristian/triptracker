@@ -54,13 +54,13 @@ def get_signed_url(request):
 def dashboard(request):
     videos = [
         {
-            "path": 'triptracker/recorded_videos/1stTripTrackerVid.webm',
+            "path": 'triptracker/recorded_videos/3rdTripTrackerVid_ai analysis.mp4',
         },
         {
-            "path": 'triptracker/recorded_videos/2ndTripTrackerVid.webm',
+            "path": 'triptracker/recorded_videos/2ndTripTrackerVid_why nervous.mp4',
         },
         {
-            "path": 'triptracker/recorded_videos/3rdTripTrackerVid.webm',
+            "path": 'triptracker/recorded_videos/1stTripTrackerVid_avatar machine.mp4',
         },
     ]
 
