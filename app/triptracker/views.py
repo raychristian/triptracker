@@ -55,12 +55,18 @@ def dashboard(request):
     videos = [
         {
             "path": 'triptracker/recorded_videos/3rdTripTrackerVid_ai analysis.mp4',
+            "title": "AI Analysis Oct 11",
+            "description": "Thoughts on your progress",
         },
         {
             "path": 'triptracker/recorded_videos/2ndTripTrackerVid_why nervous.mp4',
+            "title": "Q2 Oct 11 Trip Notes",
+            "description": "Why were you nervous?",
         },
         {
             "path": 'triptracker/recorded_videos/1stTripTrackerVid_avatar machine.mp4',
+            "title": "Q1 Oct 11 Trip Notes",
+            "description": "In and out of the body",
         },
     ]
 

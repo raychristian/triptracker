@@ -152,6 +152,13 @@ body {
     background-color: transparent;
 }
 
+/* calling out a class, e.g. dashboard, to have a no-image background */
+.noImgBg-body {
+    background-image: none; /* Remove the background image */
+    background-color: #ffffff; /* Set the background to white */
+}
+
+
 #synthesiaVideo, #localVideo, #remoteVideo {
     position: absolute;
     top: 0;
