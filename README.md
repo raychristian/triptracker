@@ -2,7 +2,7 @@
 
 Trip Tracker is designed to aid explorers in their psychedelic journeys. Through an AI-assisted simulated video chat experience, users can track their progress, share their hopes, fears, and post-trip reflections, creating an intimate video history of their transformative experiences. The code for the live demo (our v3) is not public and this repo (v1) has features that were initially scoped but later nixed. For example this repo features real-time chats with WebRTC, websockets, and Django channels. Once it became clear that Synthesia video render time would prevent real-time comms (for now), we simplified the project to instead simulate a conversation. However this repo has code for real-time comms that we may use in the future.
 
-## 🚀 [Live Demo](https://www.triptracker.me)
+## [Demo]([https://www.triptracker.me](https://drive.google.com/file/d/1up3pwNvTS-yoCY0hhbYixtreIEJOLH_U/view))
 
 ## Table of Contents
 
